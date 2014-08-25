@@ -1,6 +1,6 @@
-##Alert Bar WPF User Control
+##Alert Bar WPF UserControl
 
-This is a WPF user control for displaying status updates through an alert bar. There are four types of alerts: success, danger, warning or information. The color scheme and icons for each are based on the type.
+This is a WPF user control for displaying status updates through an alert bar. There are four types of alerts: success, danger, warning or information. The color scheme and icons for each are based on the type. 
   
 <div><img src="/ReadME/Success.png" alt="Success" /></div>
 <div><img src="/ReadME/Danger.png" alt="Danger" /></div>
@@ -8,7 +8,7 @@ This is a WPF user control for displaying status updates through an alert bar. T
 <div><img src="/ReadME/WarningB.png" alt="Warning No Icon" /></div>
 <div><img src="/ReadME/Information.png" alt="Information" /></div>
 
-The user control only takes up space whenever a message is being shown, otherwise sits at a collapsed state. It also has an option to auto-close after a set amount of seconds. 
+The user control only takes up space whenever a message is being shown, otherwise sits at a collapsed state.  A close button is included to dismiss the alert. It also has an option to auto-close after a set amount of seconds. 
 
 <h4>GUI</h4>
 In the xaml you must reference the namespace to add the user control:
