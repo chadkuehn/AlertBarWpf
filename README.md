@@ -1,4 +1,4 @@
-##AlertBarWpf
+##Alert Bar WPF User Control
 
 This is a WPF user control for displaying status updates through an alert bar. There are four types of alerts: success, danger, warning or information. The color scheme and icons for each are based on the type.
   
@@ -32,10 +32,10 @@ An optional `IconVisibility` parameter to remove icons from all alert messages:
 To make use of the control we trigger it in the xaml.cs.  Here are some examples:
 ```csharp
 msgbar.Clear();
-msgbar.SetDangerMessage("Select an Item.");
-msgbar.SetSuccessMessage("Orders Successfully Processed!", 5); //will auto-close after 5 seconds
-msgbar.SetWarningMessage("No order info found so declared a re-order.");
-msgbar.SetInformationMessage("Sale begins on Aug 1");
+msgbar.SetDangerAlert("Select an Item.");
+msgbar.SetSuccessAlert("Orders Successfully Processed!", 5); //will auto-close after 5 seconds
+msgbar.SetWarningAlert("No order info found so declared a re-order.");
+msgbar.SetInformationAlert("Sale begins on Aug 1");
 ```
 
 <h4>Compiled Version</h4>
