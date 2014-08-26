@@ -11,7 +11,7 @@ This is a WPF usercontrol for displaying user updates through an alert bar. Ther
 The usercontrol only takes up space whenever a message is being shown, otherwise sits at a collapsed state.  A close button is included to dismiss the alert. It also has an option to auto-close after a set amount of seconds. 
 
 <h4>GUI</h4>
-In the xaml you must reference the namespace to add the user control:
+In the xaml you must reference the namespace to add the usercontrol:
 ```html
 <Window ...
     xmlns:mbar="clr-namespace:AlertBarWpf;assembly=AlertBarWpf">
@@ -38,6 +38,6 @@ msgbar.SetWarningAlert("No order info found so declared a re-order.");
 msgbar.SetInformationAlert("Sale begins on Aug 1");
 ```
 
-<h4>Retrieve UserControl</h4>
-A <a href="https://www.nuget.org/packages/AlertBarWpf/">nuget</a> exists for this usercontrol. It can be installed within visual studio.  Alternatively, you can <a href="/ReadME/Library.zip">download</a> a ZIP file containing the DLL.
+<h4>Intall</h4>
+A <a href="https://www.nuget.org/packages/AlertBarWpf/">nuget</a> exists for this usercontrol. It can be installed within Visual Studio.  Alternatively, you can <a href="/ReadME/Library.zip">download</a> a ZIP file containing the DLL.  In Visual Studio, you can add a Reference and browse to that file.
 Visit the author at <a href="http://chadkuehn.com">chadkuehn.com</a>.
