@@ -13,21 +13,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AlertBarWpfNamespace
+namespace AlertBarWpf
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class AlertBarWpfControl : UserControl
+    public partial class AlertBarWpf : UserControl
     {
-        public AlertBarWpfControl()
+        public AlertBarWpf()
         {
             InitializeComponent();
             tbWrapper.DataContext = this;
         }
 
 
-        public static readonly RoutedEvent ShowEvent = EventManager.RegisterRoutedEvent("Show", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AlertBarWpfControl));
+        public static readonly RoutedEvent ShowEvent = EventManager.RegisterRoutedEvent("Show", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AlertBarWpf));
 
         public event RoutedEventHandler Show
         {
@@ -37,7 +37,7 @@ namespace AlertBarWpfNamespace
 
         private void RaiseShowEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(AlertBarWpfControl.ShowEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(AlertBarWpf.ShowEvent);
             RaiseEvent(newEventArgs);
         }
 
@@ -61,11 +61,11 @@ namespace AlertBarWpfNamespace
 
 
         /// <summary>
-        /// Shows a Danger Message
+        /// Shows a Danger Alert
         /// </summary>
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
-        public void SetDangerMessage(string message, int timeoutInSeconds = 0)
+        public void SetDangerAlert(string message, int timeoutInSeconds = 0)
         {
             SolidColorBrush bg = new SolidColorBrush();
             bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D9534F"));
@@ -77,17 +77,17 @@ namespace AlertBarWpfNamespace
             }
             else
             {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/MessageBarControl;component/Resources/danger_16.png", UriKind.Relative));
+                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/danger_16.png", UriKind.Relative));
             }
             houseKeeping(message, timeoutInSeconds);
         }
 
         /// <summary>
-        /// Shows a warning Message
+        /// Shows a warning Alert
         /// </summary>
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
-        public void SetWarningMessage(string message, int timeoutInSeconds = 0)
+        public void SetWarningAlert(string message, int timeoutInSeconds = 0)
         {
             //  tbWrapper.Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
             SolidColorBrush bg = new SolidColorBrush();
@@ -100,18 +100,18 @@ namespace AlertBarWpfNamespace
             }
             else
             {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/MessageBarControl;component/Resources/warning_16.png", UriKind.Relative));
+                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/warning_16.png", UriKind.Relative));
             }
             houseKeeping(message, timeoutInSeconds);
 
         }
 
         /// <summary>
-        /// Shows a Success Message
+        /// Shows a Success Alert
         /// </summary>
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
-        public void SetSuccessMessage(string message, int timeoutInSeconds = 0)
+        public void SetSuccessAlert(string message, int timeoutInSeconds = 0)
         {
             tbWrapper.Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
             SolidColorBrush bg = new SolidColorBrush();
@@ -124,18 +124,18 @@ namespace AlertBarWpfNamespace
             }
             else
             {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/MessageBarControl;component/Resources/success_16.png", UriKind.Relative));
+                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/success_16.png", UriKind.Relative));
             }
             houseKeeping(message, timeoutInSeconds);
         }
 
 
         /// <summary>
-        /// Shows an Information Message
+        /// Shows an Information Alert
         /// </summary>
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
-        public void SetInformationMessage(string message, int timeoutInSeconds = 0)
+        public void SetInformationAlert(string message, int timeoutInSeconds = 0)
         {
             SolidColorBrush bg = new SolidColorBrush();
             bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#5BC0DE"));
@@ -147,7 +147,7 @@ namespace AlertBarWpfNamespace
             }
             else
             {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/MessageBarControl;component/Resources/information_16.png", UriKind.Relative));
+                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/information_16.png", UriKind.Relative));
             }
             houseKeeping(message, timeoutInSeconds);
         }

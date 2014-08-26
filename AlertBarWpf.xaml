@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="AlertBarWpfNamespace.AlertBarWpfControl"
+﻿<UserControl x:Class="AlertBarWpf.AlertBarWpf"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             xmlns:local="clr-namespace:AlertBarWpfNamespace"
+             xmlns:local="clr-namespace:AlertBarWpf"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Triggers>
-        <EventTrigger RoutedEvent="local:AlertBarWpfControl.Show">
+        <EventTrigger RoutedEvent="local:AlertBarWpf.Show">
             <BeginStoryboard>
                 <Storyboard>
                     <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Name="AnimationObject" Storyboard.TargetName="tbWrapper" Completed="AnimationObject_Completed">
