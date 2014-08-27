@@ -11,7 +11,7 @@
         <EventTrigger RoutedEvent="local:AlertBarWpf.Show">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Name="AnimationObject" Storyboard.TargetName="tbWrapper" Completed="AnimationObject_Completed">
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Name="AnimationObject" Storyboard.TargetName="grdWrapper" Completed="AnimationObject_Completed">
                         <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
                         <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
                         <EasingDoubleKeyFrame x:Name="key1" KeyTime="0:0:5" Value="1"/>
@@ -22,28 +22,68 @@
         </EventTrigger>
 
     </UserControl.Triggers>
-    <Grid>
-        <Grid Name="tbWrapper" Visibility="Collapsed">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="26" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="20" />
-            </Grid.ColumnDefinitions>
 
-            <Image x:Name="imgStatusIcon" Width="16" Height="16" Grid.Column="0" Margin="10,4,0,4" VerticalAlignment="Center" />
-            <TextBlock Name="tbMessage" FontWeight="Bold" Margin="5,0,5,0" FontSize="11" Grid.Column="1" VerticalAlignment="Center" />
-            <Image x:Name="imgCloseIcon" Width="10" Height="10" MouseUp="Image_MouseUp" Grid.Column="2"  Margin="0,4,10,4" VerticalAlignment="Center">
-                <Image.Style>
-                    <Style>
-                        <Setter Property="Image.Source" Value="Resources/close.png" />
-                        <Style.Triggers>
-                            <Trigger Property="Image.IsMouseOver" Value="True">
-                                <Setter Property="Image.Source" Value="Resources/close-hover.png" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-        </Grid>
+
+    <Grid Name="grdWrapper" Visibility="Collapsed">
+
+
+        <StackPanel Name="spStandard" Visibility="Collapsed">
+
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="26" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <Image Width="16" Height="16" Grid.Column="0" Margin="10,4,0,4" VerticalAlignment="Center" />
+                <TextBlock FontWeight="Bold" Margin="5,0,5,0" FontSize="11" Grid.Column="1" VerticalAlignment="Center" Foreground="White"/>
+                <Image Width="10" Height="10" MouseUp="Image_MouseUp" Grid.Column="2"  Margin="0,4,10,4" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style>
+                            <Setter Property="Image.Source" Value="Resources/close.png" />
+                            <Style.Triggers>
+                                <Trigger Property="Image.IsMouseOver" Value="True">
+                                    <Setter Property="Image.Source" Value="Resources/close-hover.png" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
+        </StackPanel>
+
+
+        <StackPanel Name="spOutline" Visibility="Collapsed">
+            <Border Name="bdr" BorderThickness="2" CornerRadius="5" >
+                <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Width="16" Height="16" Grid.Column="0" Margin="10,4,0,4" VerticalAlignment="Center" />
+                            <TextBlock FontWeight="Bold" Margin="5,0,5,0" FontSize="11" Grid.Column="1" VerticalAlignment="Center" Foreground="Black" />
+                            <Image  Width="10" Height="10" MouseUp="Image_MouseUp" Grid.Column="2"  Margin="0,4,10,4" VerticalAlignment="Center">
+                                <Image.Style>
+                                    <Style>
+                                        <Setter Property="Image.Source" Value="Resources/closeBL.png" />
+                                        <Style.Triggers>
+                                            <Trigger Property="Image.IsMouseOver" Value="True">
+                                                <Setter Property="Image.Source" Value="Resources/close-hover.png" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+
+
     </Grid>
 </UserControl>

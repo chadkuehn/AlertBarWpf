@@ -4,9 +4,11 @@ This is a WPF usercontrol for displaying user updates through an alert bar. Ther
   
 <div><img src="/ReadME/Success.png" alt="Success" /></div>
 <div><img src="/ReadME/Danger.png" alt="Danger" /></div>
+<div><img src="/ReadME/Information.png" alt="Information" /></div>
 <div><img src="/ReadME/Warning.png" alt="Warning" /></div>
 <div><img src="/ReadME/WarningB.png" alt="Warning No Icon" /></div>
-<div><img src="/ReadME/Information.png" alt="Information" /></div>
+<div><img src="/ReadME/WarningC.png" alt="Warning Outline Theme" /></div>
+<div><img src="/ReadME/WarningD.png" alt="Warning Outline Theme, No Icon" /></div>
 
 The usercontrol only takes up space whenever a message is being shown, otherwise sits at a collapsed state.  A close button is included to dismiss the alert. It also has an option to auto-close after a set amount of seconds. 
 
@@ -22,10 +24,10 @@ Using this reference place the control on the form.  I typically position this a
  <mbar:AlertBarWpf x:Name="msgbar" />
 ```
 
-An optional `IconVisibility` parameter to remove icons from all alert messages:
+An optional `IconVisibility` parameter to remove icons from all alert messages.  There is also a `Theme` parameter to adjust the look of the bar:
 
 ```html
- <mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" />
+ <mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" Theme="Outline" />
 ```
 
 <h4>Code Behind</h4>

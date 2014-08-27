@@ -23,7 +23,7 @@ namespace AlertBarWpf
         public AlertBarWpf()
         {
             InitializeComponent();
-            tbWrapper.DataContext = this;
+            // grdWrapper.DataContext = this;
         }
 
 
@@ -41,22 +41,83 @@ namespace AlertBarWpf
             RaiseEvent(newEventArgs);
         }
 
-        private void houseKeeping(string msg, int secs)
+        private void TransformStage(string msg, int secs, string colorhex, string iconsrc)
         {
-            tbMessage.Text = msg;
-            tbWrapper.Visibility = System.Windows.Visibility.Visible;
+
+
+            SolidColorBrush bg = new SolidColorBrush();
+            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom(colorhex));
+
+            Grid grdParent;
+            switch (_Theme)
+            {
+                case ThemeType.Standard:
+                    spStandard.Visibility = System.Windows.Visibility.Visible;
+                    spOutline.Visibility = System.Windows.Visibility.Collapsed;
+
+                    grdParent = FindVisualChildren<Grid>(spStandard).FirstOrDefault();
+                    grdParent.Background = bg;
+                    break;
+                case ThemeType.Outline:
+                default:
+                    spStandard.Visibility = System.Windows.Visibility.Collapsed;
+                    spOutline.Visibility = System.Windows.Visibility.Visible;
+
+                    grdParent = FindVisualChildren<Grid>(spOutline).FirstOrDefault();
+                    bdr.BorderBrush = bg;
+                    break;
+            }
+
+            TextBlock lblMessage = FindVisualChildren<TextBlock>(grdParent).FirstOrDefault();
+            List<Image> imgs = FindVisualChildren<Image>(grdParent).ToList();
+            Image imgStatusIcon = imgs[0];
+            Image imgCloseIcon = imgs[1];
+
+
+            if (_IconVisibility == false)
+            {
+                imgStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
+                grdParent.ColumnDefinitions.RemoveAt(0);
+                lblMessage.SetValue(Grid.ColumnProperty, 0);
+                imgCloseIcon.SetValue(Grid.ColumnProperty, 1);
+                lblMessage.Margin = new Thickness(10, 4, 0, 4);
+                lblMessage.Height = 16;
+            }
+            else
+            {
+                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/" + iconsrc, UriKind.Relative));
+            }
+
+
+
+
+            lblMessage.Text = msg;
+            grdWrapper.Visibility = System.Windows.Visibility.Visible;
             key1.KeyTime = new TimeSpan(0, 0, (secs == 0 ? 0 : secs - 1));
             key2.KeyTime = new TimeSpan(0, 0, secs);
             RaiseShowEvent();
         }
 
-        private void hideIcon()
+
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
-            imgStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
-            tbWrapper.ColumnDefinitions.RemoveAt(0);
-            tbMessage.SetValue(Grid.ColumnProperty, 0);
-            imgCloseIcon.SetValue(Grid.ColumnProperty, 1);
-            tbMessage.Margin = new Thickness(10, 4, 0, 4);
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
 
 
@@ -67,19 +128,9 @@ namespace AlertBarWpf
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetDangerAlert(string message, int timeoutInSeconds = 0)
         {
-            SolidColorBrush bg = new SolidColorBrush();
-            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D9534F"));
-            tbWrapper.Background = bg;
-            tbMessage.Foreground = new SolidColorBrush(Colors.White);
-            if (_IconVisibility == false)
-            {
-                hideIcon();
-            }
-            else
-            {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/danger_16.png", UriKind.Relative));
-            }
-            houseKeeping(message, timeoutInSeconds);
+            string color = "#D9534F";
+            string icon = "danger_16.png";
+            TransformStage(message, timeoutInSeconds, color, icon);
         }
 
         /// <summary>
@@ -89,21 +140,10 @@ namespace AlertBarWpf
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetWarningAlert(string message, int timeoutInSeconds = 0)
         {
-            //  tbWrapper.Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
-            SolidColorBrush bg = new SolidColorBrush();
-            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#F0AD4E"));
-            tbWrapper.Background = bg;
-            tbMessage.Foreground = new SolidColorBrush(Colors.White);
-            if (_IconVisibility == false)
-            {
-                hideIcon();
-            }
-            else
-            {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/warning_16.png", UriKind.Relative));
-            }
-            houseKeeping(message, timeoutInSeconds);
+            string color = "#F0AD4E";
+            string icon = "warning_16.png";
 
+            TransformStage(message, timeoutInSeconds, color, icon);
         }
 
         /// <summary>
@@ -113,20 +153,9 @@ namespace AlertBarWpf
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetSuccessAlert(string message, int timeoutInSeconds = 0)
         {
-            tbWrapper.Background = new SolidColorBrush(Colors.LightGoldenrodYellow);
-            SolidColorBrush bg = new SolidColorBrush();
-            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#5CB85C"));
-            tbWrapper.Background = bg;
-            tbMessage.Foreground = new SolidColorBrush(Colors.White);
-            if (_IconVisibility == false)
-            {
-                hideIcon();
-            }
-            else
-            {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/success_16.png", UriKind.Relative));
-            }
-            houseKeeping(message, timeoutInSeconds);
+            string color = "#5CB85C";
+            string icon = "success_16.png";
+            TransformStage(message, timeoutInSeconds, color, icon);
         }
 
 
@@ -137,22 +166,19 @@ namespace AlertBarWpf
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetInformationAlert(string message, int timeoutInSeconds = 0)
         {
-            SolidColorBrush bg = new SolidColorBrush();
-            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom("#5BC0DE"));
-            tbWrapper.Background = bg;
-            tbMessage.Foreground = new SolidColorBrush(Colors.White);
-            if (_IconVisibility == false)
-            {
-                hideIcon();
-            }
-            else
-            {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/information_16.png", UriKind.Relative));
-            }
-            houseKeeping(message, timeoutInSeconds);
+            string color = "#5BC0DE";
+            string icon = "information_16.png";
+            TransformStage(message, timeoutInSeconds, color, icon);
         }
 
 
+        public enum ThemeType
+        {
+            Standard = 0,
+            Outline = 1
+        }
+
+        private ThemeType _Theme = ThemeType.Standard;
         private bool _IconVisibility = true;
 
         /// <summary>
@@ -176,12 +202,34 @@ namespace AlertBarWpf
 
 
 
+        public ThemeType? Theme
+        {
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+                if (Enum.IsDefined(typeof(ThemeType), value))
+                {
+                    _Theme = value ?? ThemeType.Standard;
+                }
+            }
+
+            get
+            {
+                return _Theme;
+            }
+        }
+
+
+
         /// <summary>
         /// Remove a message if one is currently being shown.
         /// </summary>
         public void Clear()
         {
-            tbWrapper.Visibility = System.Windows.Visibility.Collapsed;
+            grdWrapper.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void Image_MouseUp(object sender, MouseButtonEventArgs e)
@@ -192,7 +240,7 @@ namespace AlertBarWpf
 
         private void AnimationObject_Completed(object sender, EventArgs e)
         {
-            if (tbWrapper.Opacity == 0)
+            if (grdWrapper.Opacity == 0)
             {
                 //If you call msgbar.setErrorMessage("Whateva") in MainWindow() of your WPF the window is not rendered yet.  So opacity is 0.  If you have a timeout of 0 then it would call this immediately
                 if (key1.KeyTime.TimeSpan.Seconds > 0)

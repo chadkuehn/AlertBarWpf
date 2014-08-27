@@ -86,13 +86,16 @@
     <Resource Include="Resources\success_16.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\warning_16.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\information_16.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\warning_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\closeBL.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
