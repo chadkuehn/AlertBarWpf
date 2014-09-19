@@ -41,5 +41,5 @@ msgbar.SetInformationAlert("Sale begins on Aug 1");
 ```
 
 <h4>Intall</h4>
-A <a href="https://www.nuget.org/packages/AlertBarWpf/">nuget</a> exists for this usercontrol. It can be installed within Visual Studio.  Alternatively, you can <a href="https://github.com/chadkuehn/AlertBarWpf/blob/master/ReadME/Library.zip">download</a> a ZIP file containing the DLL.  In Visual Studio, you can add a Reference and browse to that file.
+A <a href="https://www.nuget.org/packages/AlertBarWpf/">nuget</a> exists for this usercontrol. It can be installed within Visual Studio.  Alternatively, you can <a href="https://github.com/chadkuehn/AlertBarWpf/blob/master/ReadME/Library.zip?raw=true">download</a> a ZIP file containing the DLL.  In Visual Studio, you can add a Reference and browse to that file.
 Visit the author at <a href="http://chadkuehn.com">chadkuehn.com</a>.
