@@ -10,7 +10,7 @@ This is a WPF usercontrol for displaying user updates through an alert bar. Ther
 ## Getting Started
 Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).
 
-**GUI**
+**GUI:**  
 In the xaml you must reference the namespace to add the usercontrol:
 ```html
 <Window ...
@@ -28,7 +28,7 @@ An optional `IconVisibility` parameter to remove icons from all alert messages. 
  <mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" Theme="Outline" />
 ```
 
-**Code Behind**
+**Code Behind:**  
 To make use of the control we trigger it in the xaml.cs.  Call the methods like so:
 ```csharp
 msgbar.Clear();
