@@ -8,7 +8,7 @@ This is a WPF usercontrol for displaying user updates through an alert bar. Ther
  - WPF Project
 
 ## Getting Started
-Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).
+Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).  If you install the archive you must go to Solution Explorer > right-click on References > Add a Reference > browse to DLL in bin folder.
 
 **GUI:**  
 In the xaml you must reference the namespace to add the usercontrol:
@@ -50,7 +50,19 @@ msgbar.SetDangerAlert("Select an Item.");
  - SetDangerAlert
  - SetSuccessAlert
  - SetWarningAlert
- - SetInformationAlert
+ - SetInformationAlert  
+
+Each of the creation methods above takes a message parameter and an optional timeout parameter (based on seconds). 
+
+**XAML Properties:**
+ - Theme
+ - IconVisibility
+
+**Themes:**  
+
+ - Outline
+ - Standard
+
 
 
 ## Support
