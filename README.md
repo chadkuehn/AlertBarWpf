@@ -8,7 +8,7 @@ This is a WPF usercontrol for displaying user updates through an alert bar. Ther
  - WPF Project
 
 ## Getting Started
-Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).  If you install the archive you must go to Solution Explorer > right-click on References > Add a Reference > browse to DLL in bin folder.
+Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).  If you downloaded the archive then in Visual Studio you must go to Solution Explorer > right-click on References > Add a Reference > browse to DLL in the archive bin folder.
 
 **GUI:**  
 In the xaml you must reference the namespace to add the usercontrol:
