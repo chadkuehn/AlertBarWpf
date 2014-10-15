@@ -1,18 +1,16 @@
-##Alert Bar WPF UserControl
+# Alert Bar WPF UserControl
 
 This is a WPF usercontrol for displaying user updates through an alert bar. There are four types of alerts: success, danger, warning or information. The color scheme and icons for each are based on the type. 
-  
-<div><img src="/ReadME/Success.png" alt="Success" /></div>
-<div><img src="/ReadME/Danger.png" alt="Danger" /></div>
-<div><img src="/ReadME/Information.png" alt="Information" /></div>
-<div><img src="/ReadME/Warning.png" alt="Warning" /></div>
-<div><img src="/ReadME/WarningB.png" alt="Warning No Icon" /></div>
-<div><img src="/ReadME/WarningC.png" alt="Warning Outline Theme" /></div>
-<div><img src="/ReadME/WarningD.png" alt="Warning Outline Theme, No Icon" /></div>
 
-The usercontrol only takes up space whenever a message is being shown, otherwise sits at a collapsed state.  A close button is included to dismiss the alert. It also has an option to auto-close after a set amount of seconds. 
+![Screenshot 1](https://raw.github.com/chadkuehn/AlertBarWpf/master/asset/screenshots/screenshot1.gif)
 
-<h4>GUI</h4>
+## Dependencies
+ - WPF Project
+
+## Getting Started
+Download the [archive](https://github.com/chadkuehn/AlertBarWpf/releases/latest) or install the [nuget](https://www.nuget.org/packages/AlertBarWpf/).
+
+**GUI**
 In the xaml you must reference the namespace to add the usercontrol:
 ```html
 <Window ...
@@ -30,16 +28,42 @@ An optional `IconVisibility` parameter to remove icons from all alert messages. 
  <mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" Theme="Outline" />
 ```
 
-<h4>Code Behind</h4>
-To make use of the control we trigger it in the xaml.cs.  Here are some examples:
+**Code Behind**
+To make use of the control we trigger it in the xaml.cs.  Call the methods like so:
 ```csharp
 msgbar.Clear();
 msgbar.SetDangerAlert("Select an Item.");
-msgbar.SetSuccessAlert("Orders Successfully Processed!", 5); //will auto-close after 5 seconds
-msgbar.SetWarningAlert("No order info found so declared a re-order.");
-msgbar.SetInformationAlert("Sale begins on Aug 1");
 ```
 
-<h4>Intall</h4>
-A <a href="https://www.nuget.org/packages/AlertBarWpf/">nuget</a> exists for this usercontrol. It can be installed within Visual Studio.  Alternatively, you can <a href="https://github.com/chadkuehn/AlertBarWpf/blob/master/ReadME/Library.zip?raw=true">download</a> a ZIP file containing the DLL.  In Visual Studio, you can add a Reference and browse to that file.
-Visit the author at <a href="http://chadkuehn.com">chadkuehn.com</a>.
+
+## Features
+ - Multiple themes
+ - Recognizable color scheme/icons for danger, success, warning, or information
+ - Does not occupy space when not in use
+ - Auto-closes (if desired)
+
+
+## API
+**Methods:**
+
+ - Clear
+ - SetDangerAlert
+ - SetSuccessAlert
+ - SetWarningAlert
+ - SetInformationAlert
+
+
+## Support
+Found a bug or have a feature request? [Open an issue](https://github.com/chadkuehn/AlertBarWpf/issues/new ).  
+ 
+## Author
+**Chad Kuehn** ([@ChadillacMan](https://twitter.com/ChadillacMan))  
+[http://chadkuehn.com](http://chadkuehn.com)
+
+## Copyright & License
+Copyright (c) 2014 Chad Kuehn  
+
+AlertBarWpf is available under the MIT license. See the [LICENSE file][7.1]
+for more information.
+
+[7.1]: ./LICENSE.txt
