@@ -69,8 +69,7 @@ Each of the creation methods above takes a message parameter and an optional tim
 Found a bug or have a feature request? [Open an issue](https://github.com/chadkuehn/AlertBarWpf/issues/new ).  
  
 ## Author
-**Chad Kuehn** ([@ChadillacMan](https://twitter.com/ChadillacMan))  
-[http://chadkuehn.com](http://chadkuehn.com)
+**Chad Kuehn**
 
 ## Copyright & License
 Copyright (c) 2014 Chad Kuehn  
