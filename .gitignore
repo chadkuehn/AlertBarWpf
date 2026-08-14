@@ -121,6 +121,9 @@ publish/
 # Scratch smoke-test app (TESTING.md) - throwaway, never committed
 playground/
 
+# Personal planning/follow-up notes - not user-facing docs, kept local only
+*-plan.md
+
 # Local pack output (VS Code "NuGet: Pack" task)
 /nupkg/
 

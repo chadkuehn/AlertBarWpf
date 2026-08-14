@@ -20,7 +20,7 @@ namespace AlertBarWpf
         Neutral
     }
 
-    public enum ThemeType
+    public enum BarStyleType
     {
         Standard = 0,
         Outline = 1
@@ -63,16 +63,16 @@ namespace AlertBarWpf
 
         #region Dependency properties
 
-        public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
-            nameof(Theme), typeof(ThemeType), typeof(AlertBarWpf), new PropertyMetadata(ThemeType.Standard));
+        public static readonly DependencyProperty BarStyleProperty = DependencyProperty.Register(
+            nameof(BarStyle), typeof(BarStyleType), typeof(AlertBarWpf), new PropertyMetadata(BarStyleType.Standard));
 
         /// <summary>
-        /// Adjusts the look of the bar. See the <see cref="ThemeType"/> options.
+        /// Adjusts the look of the bar. See the <see cref="BarStyleType"/> options.
         /// </summary>
-        public ThemeType Theme
+        public BarStyleType BarStyle
         {
-            get => (ThemeType)GetValue(ThemeProperty);
-            set => SetValue(ThemeProperty, value);
+            get => (BarStyleType)GetValue(BarStyleProperty);
+            set => SetValue(BarStyleProperty, value);
         }
 
         public static readonly DependencyProperty DensityProperty = DependencyProperty.Register(
@@ -132,6 +132,17 @@ namespace AlertBarWpf
             key2.KeyTime = new TimeSpan(0, 0, timeoutInSeconds);
             RaiseShowEvent();
         }
+
+        /// <summary>
+        /// Shows an alert of the given <see cref="AlertType"/>. Use this instead of the named Set*Alert
+        /// methods when the type is only known at runtime (e.g. mapped from another enum or a validation
+        /// result) rather than a compile-time constant.
+        /// </summary>
+        /// <param name="alertType">The type of alert to show</param>
+        /// <param name="message">The message for the alert</param>
+        /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
+        public void SetAlert(AlertType alertType, string message, int timeoutInSeconds = 0)
+            => TransformStage(message, timeoutInSeconds, alertType);
 
         /// <summary>
         /// Shows a Danger Alert

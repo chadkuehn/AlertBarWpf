@@ -1,6 +1,6 @@
 # Alert Bar WPF UserControl
 
-This is a WPF usercontrol for displaying user updates through an alert bar. There are four types of alerts: success, danger, warning or information. The color scheme and icons for each are based on the type.
+This is a WPF usercontrol for displaying user updates through an alert bar. There are five types of alerts: success, danger, warning, information, or neutral. The color scheme and icons for each are based on the type.
 
 ![Screenshot 1](docs/demo.gif)
 
@@ -32,10 +32,10 @@ Using this reference place the control on the form. I typically position this ab
 <mbar:AlertBarWpf x:Name="msgbar" />
 ```
 
-An optional `IconVisibility` parameter to remove icons from all alert messages. There is also a `Theme` parameter to adjust the look of the bar:
+An optional `IconVisibility` parameter to remove icons from all alert messages. There is also a `BarStyle` parameter to adjust the look of the bar:
 
 ```html
-<mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" Theme="Outline" />
+<mbar:AlertBarWpf x:Name="msgbar" IconVisibility="False" BarStyle="Outline" />
 ```
 
 **Code Behind:**
@@ -48,8 +48,8 @@ msgbar.SetDangerAlert("Select an Item.");
 
 ## Features
 
-- Multiple themes
-- Recognizable color scheme/icons for danger, success, warning, or information
+- Multiple styles (`Standard` filled and `Outline` outlined-only variants, via the `BarStyle` property)
+- Recognizable color scheme/icons for danger, success, warning, information, or neutral
 - Does not occupy space when not in use
 - Auto-closes (if desired)
 
@@ -58,6 +58,7 @@ msgbar.SetDangerAlert("Select an Item.");
 **Methods:**
 
 - `Clear()`
+- `SetAlert(AlertType alertType, string message, int timeoutInSeconds = 0)` — use when the alert type is only known at runtime
 - `SetDangerAlert(string message, int timeoutInSeconds = 0)`
 - `SetSuccessAlert(string message, int timeoutInSeconds = 0)`
 - `SetWarningAlert(string message, int timeoutInSeconds = 0)`
@@ -68,7 +69,7 @@ Each of the creation methods above takes a message parameter and an optional tim
 
 **XAML Properties:**
 
-- `Theme` (`ThemeType`)
+- `BarStyle` (`BarStyleType`)
 - `Density` (`DensityType`)
 - `IconVisibility` (`bool`)
 - `CurrentAlertType` (`AlertType`, read-only) — the alert currently displayed by the bar
@@ -78,7 +79,7 @@ Each of the creation methods above takes a message parameter and an optional tim
 
 - `Show` — raised whenever a `Set*Alert` method is called
 
-**`ThemeType` enum:**
+**`BarStyleType` enum:**
 
 - `Standard`
 - `Outline`
