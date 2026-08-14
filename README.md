@@ -2,7 +2,7 @@
 
 This is a WPF usercontrol for displaying user updates through an alert bar. There are five types of alerts: success, danger, warning, information, or neutral. The color scheme and icons for each are based on the type.
 
-![Screenshot 1](docs/demo.gif)
+![Screenshot 1](docs/demo.gif?v=2)
 
 ## Dependencies
 
