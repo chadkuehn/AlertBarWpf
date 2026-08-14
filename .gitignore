@@ -118,6 +118,12 @@ DocProject/Help/html
 # Click-Once directory
 publish/
 
+# Scratch smoke-test app (TESTING.md) - throwaway, never committed
+playground/
+
+# Local pack output (VS Code "NuGet: Pack" task)
+/nupkg/
+
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
@@ -185,7 +191,8 @@ FakesAssemblies/
 .LSOverride
 
 # Icon must ends with two \r.
-Icon
+Icon
+
 
 # Thumbnails
 ._*

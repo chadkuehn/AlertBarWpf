@@ -7,7 +7,7 @@ namespace AlertBarWpf
 {
     /// <summary>
     /// The kind of alert currently displayed. Drives the icon and accent color via
-    /// <see cref="Converters.AlertTypeToIconConverter"/> and <see cref="Converters.AlertTypeToBrushConverter"/>.
+    /// <see cref="Converters.AlertTypeToIconGeometryConverter"/> and <see cref="Converters.AlertTypeToBrushConverter"/>.
     /// </summary>
     public enum AlertType
     {
@@ -15,13 +15,26 @@ namespace AlertBarWpf
         Danger,
         Warning,
         Success,
-        Information
+        Information,
+        /// <summary>A non-severity, iconless alert for generic messages that shouldn't imply status.</summary>
+        Neutral
     }
 
     public enum ThemeType
     {
         Standard = 0,
         Outline = 1
+    }
+
+    /// <summary>
+    /// Controls the bar's overall scale (icon/text/close-glyph size and spacing).
+    /// </summary>
+    public enum DensityType
+    {
+        /// <summary>Larger icon/text/close-glyph sizing, easier to read next to typical modern-themed controls.</summary>
+        Comfortable = 0,
+        /// <summary>The original, more tightly-packed sizing.</summary>
+        Compact = 1
     }
 
     /// <summary>
@@ -60,6 +73,18 @@ namespace AlertBarWpf
         {
             get => (ThemeType)GetValue(ThemeProperty);
             set => SetValue(ThemeProperty, value);
+        }
+
+        public static readonly DependencyProperty DensityProperty = DependencyProperty.Register(
+            nameof(Density), typeof(DensityType), typeof(AlertBarWpf), new PropertyMetadata(DensityType.Comfortable));
+
+        /// <summary>
+        /// Adjusts the bar's overall scale. See the <see cref="DensityType"/> options.
+        /// </summary>
+        public DensityType Density
+        {
+            get => (DensityType)GetValue(DensityProperty);
+            set => SetValue(DensityProperty, value);
         }
 
         public static readonly DependencyProperty IconVisibilityProperty = DependencyProperty.Register(
@@ -139,6 +164,14 @@ namespace AlertBarWpf
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetInformationAlert(string message, int timeoutInSeconds = 0)
             => TransformStage(message, timeoutInSeconds, AlertType.Information);
+
+        /// <summary>
+        /// Shows a Neutral Alert (no icon, no severity color) for generic messages.
+        /// </summary>
+        /// <param name="message">The message for the alert</param>
+        /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
+        public void SetNeutralAlert(string message, int timeoutInSeconds = 0)
+            => TransformStage(message, timeoutInSeconds, AlertType.Neutral);
 
         /// <summary>
         /// Remove a message if one is currently being shown.

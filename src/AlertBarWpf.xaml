@@ -9,9 +9,10 @@
              d:DesignHeight="40" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <conv:AlertTypeToIconConverter x:Key="AlertTypeToIconConverter" />
+        <conv:AlertTypeToIconGeometryConverter x:Key="AlertTypeToIconGeometryConverter" />
         <conv:AlertTypeToBrushConverter x:Key="AlertTypeToBrushConverter" />
-        <conv:BoolToIconColumnWidthConverter x:Key="BoolToIconColumnWidthConverter" />
+        <conv:IconColumnWidthConverter x:Key="IconColumnWidthConverter" />
+        <conv:DensityToCloseColumnWidthConverter x:Key="DensityToCloseColumnWidthConverter" />
         <conv:CloseGlyphStrokeConverter x:Key="CloseGlyphStrokeConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </UserControl.Resources>
@@ -43,13 +44,19 @@
                 <Style TargetType="Border">
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="CornerRadius" Value="0" />
+                    <!-- Pins the bar's height so hiding the icon (IconVisibility=False) doesn't shrink the row -
+                         a Collapsed icon no longer contributes to the Grid's auto-height otherwise. -->
+                    <Setter Property="MinHeight" Value="30" />
                     <Setter Property="Background" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
                             <Setter Property="BorderThickness" Value="2" />
                             <Setter Property="CornerRadius" Value="5" />
-                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Background" Value="Transparent" />
                             <Setter Property="BorderBrush" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
+                            <Setter Property="MinHeight" Value="24" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -58,23 +65,61 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <!-- Data binding on ColumnDefinition.Width has only been supported since WPF on .NET Core 3.0+. -->
-                    <ColumnDefinition Width="{Binding IconVisibility, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource BoolToIconColumnWidthConverter}}" />
+                    <ColumnDefinition>
+                        <ColumnDefinition.Width>
+                            <MultiBinding Converter="{StaticResource IconColumnWidthConverter}">
+                                <Binding Path="IconVisibility" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
+                                <Binding Path="Density" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
+                            </MultiBinding>
+                        </ColumnDefinition.Width>
+                    </ColumnDefinition>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource DensityToCloseColumnWidthConverter}}" />
                 </Grid.ColumnDefinitions>
 
-                <Image Width="16" Height="16" Grid.Column="0" Margin="10,4,0,4" VerticalAlignment="Center"
-                       Visibility="{Binding IconVisibility, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource BoolToVisibilityConverter}}"
-                       Source="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToIconConverter}}" />
+                <!-- Stroke-only vector glyph (see AlertTypeToIconGeometryConverter) instead of a raster PNG per type. -->
+                <Path Grid.Column="0" VerticalAlignment="Center" Stretch="Uniform"
+                      StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                      Visibility="{Binding IconVisibility, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource BoolToVisibilityConverter}}"
+                      Data="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToIconGeometryConverter}}">
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Setter Property="Stroke" Value="White" />
+                            <Setter Property="Width" Value="18" />
+                            <Setter Property="Height" Value="18" />
+                            <Setter Property="Margin" Value="10,6,0,6" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
+                                    <Setter Property="Stroke" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
+                                    <Setter Property="Width" Value="16" />
+                                    <Setter Property="Height" Value="16" />
+                                    <Setter Property="Margin" Value="10,4,0,4" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
 
-                <TextBlock FontWeight="Bold" Margin="5,0,5,0" FontSize="11" Grid.Column="1" VerticalAlignment="Center"
+                <TextBlock FontWeight="Bold" Grid.Column="1" VerticalAlignment="Center"
                            Text="{Binding Message, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="White" />
+                            <Setter Property="FontSize" Value="13" />
+                            <Setter Property="Margin" Value="8,0,8,0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
-                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter Property="Foreground" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
+                                </DataTrigger>
+                                <!-- Wins over the Outline trigger above (declared later) since Neutral's pale accent can't carry white or accent-colored text. -->
+                                <DataTrigger Binding="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Neutral">
+                                    <Setter Property="Foreground" Value="#333333" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
+                                    <Setter Property="FontSize" Value="11" />
+                                    <Setter Property="Margin" Value="5,0,5,0" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -82,18 +127,44 @@
                 </TextBlock>
 
                 <!--
-                    Vector close glyph. The 10x10 Grid (not the Path) owns hit-testing/hover, since the
-                    Path itself is just two open line strokes and wouldn't register the mouse in the gaps
+                    Vector close glyph. The Grid (not the Path) owns hit-testing/hover, since the Path
+                    itself is just two open line strokes and wouldn't register the mouse in the gaps
                     between them. The Path's Stroke comes from a MultiBinding of [this Grid's IsMouseOver,
                     the control's Theme] so no close.png / close-hover.png / closeBL.png assets are needed.
+                    Both the Grid's size and the Path's Data scale down together under Density=Compact.
                 -->
-                <Grid x:Name="closeHost" Width="10" Height="10" Background="Transparent" Cursor="Hand"
-                      MouseUp="CloseButton_MouseUp" Grid.Column="2" Margin="0,4,10,4" VerticalAlignment="Center">
-                    <Path Data="M1,1 L9,9 M9,1 L1,9" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                <Grid x:Name="closeHost" Background="Transparent" Cursor="Hand"
+                      MouseUp="CloseButton_MouseUp" Grid.Column="2" VerticalAlignment="Center">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Width" Value="12" />
+                            <Setter Property="Height" Value="12" />
+                            <Setter Property="Margin" Value="0,6,10,6" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
+                                    <Setter Property="Width" Value="10" />
+                                    <Setter Property="Height" Value="10" />
+                                    <Setter Property="Margin" Value="0,4,10,4" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Path StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Data" Value="M1,1 L11,11 M11,1 L1,11" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
+                                        <Setter Property="Data" Value="M1,1 L9,9 M9,1 L1,9" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
                         <Path.Stroke>
                             <MultiBinding Converter="{StaticResource CloseGlyphStrokeConverter}">
                                 <Binding ElementName="closeHost" Path="IsMouseOver" />
                                 <Binding Path="Theme" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
+                                <Binding Path="CurrentAlertType" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
                             </MultiBinding>
                         </Path.Stroke>
                     </Path>
