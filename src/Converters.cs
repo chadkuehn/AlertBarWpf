@@ -32,8 +32,8 @@ namespace AlertBarWpf.Converters
     }
 
     /// <summary>
-    /// Looks up the shared accent color for an <see cref="AlertType"/>. Used for the Standard theme's
-    /// background fill and the Outline theme's border/text/close-glyph color, so both themes stay in sync
+    /// Looks up the shared accent color for an <see cref="AlertType"/>. Used for the Standard style's
+    /// background fill and the Outline style's border/text/close-glyph color, so both styles stay in sync
     /// and neither needs a background/foreground that assumes a light or dark host.
     /// </summary>
     internal static class AlertAccentColors
@@ -59,7 +59,7 @@ namespace AlertBarWpf.Converters
 
     /// <summary>
     /// Maps an <see cref="AlertType"/> to its accent color. The same color is used as the background
-    /// (Standard theme) or the border/text (Outline theme) — see the DataTriggers in AlertBarWpf.xaml.
+    /// (Standard style) or the border/text (Outline style) — see the DataTriggers in AlertBarWpf.xaml.
     /// </summary>
     public sealed class AlertTypeToBrushConverter : IValueConverter
     {
@@ -75,6 +75,7 @@ namespace AlertBarWpf.Converters
     /// approach of removing/re-adding the ColumnDefinition and re-indexing sibling elements in code-behind.
     /// Relies on ColumnDefinition.Width being bindable, which requires WPF on .NET Core 3.0 or newer.
     /// Also factors in Density, since the icon column needs to be wider in Comfortable than Compact.
+    /// Neutral never reserves the column, regardless of IconVisibility, since it never has an icon.
     /// </summary>
     public sealed class IconColumnWidthConverter : IMultiValueConverter
     {
@@ -83,7 +84,8 @@ namespace AlertBarWpf.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             bool visible = values.Length > 0 && values[0] is bool b && b;
-            if (!visible)
+            AlertType alertType = values.Length > 2 && values[2] is AlertType a ? a : AlertType.None;
+            if (!visible || alertType == AlertType.Neutral)
             {
                 return Hidden;
             }
@@ -110,7 +112,7 @@ namespace AlertBarWpf.Converters
     }
 
     /// <summary>
-    /// Picks the stroke color for the vector close glyph from whether it's hovered, which theme is
+    /// Picks the stroke color for the vector close glyph from whether it's hovered, which style is
     /// active, and (for Outline) the current alert's accent color. Replaces the old close.png /
     /// close-hover.png / closeBL.png raster trio — the glyph is now drawn with a Path, so color is just a
     /// brush, not a separate image asset per state. Outline uses the accent color instead of a fixed
@@ -135,8 +137,8 @@ namespace AlertBarWpf.Converters
                 return AlertAccentColors.NeutralForeground;
             }
 
-            ThemeType theme = values.Length > 1 && values[1] is ThemeType t ? t : ThemeType.Standard;
-            if (theme != ThemeType.Outline)
+            BarStyleType style = values.Length > 1 && values[1] is BarStyleType s ? s : BarStyleType.Standard;
+            if (style != BarStyleType.Outline)
             {
                 return StandardBrush;
             }

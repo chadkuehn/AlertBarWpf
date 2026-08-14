@@ -33,9 +33,9 @@
     </UserControl.Triggers>
 
     <!--
-        A single visual tree shared by both themes. Theme-specific appearance (background vs. outline,
+        A single visual tree shared by both styles. Style-specific appearance (background vs. outline,
         text color, close-icon color) is switched with DataTriggers bound back to this control's own
-        Theme/IconVisibility/CurrentAlertType properties via RelativeSource, instead of maintaining two
+        BarStyle/IconVisibility/CurrentAlertType properties via RelativeSource, instead of maintaining two
         parallel StackPanels and walking the visual tree in code-behind.
     -->
     <Grid Name="grdWrapper" Visibility="Collapsed">
@@ -49,7 +49,7 @@
                     <Setter Property="MinHeight" Value="30" />
                     <Setter Property="Background" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
+                        <DataTrigger Binding="{Binding BarStyle, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
                             <Setter Property="BorderThickness" Value="2" />
                             <Setter Property="CornerRadius" Value="5" />
                             <Setter Property="Background" Value="Transparent" />
@@ -70,6 +70,7 @@
                             <MultiBinding Converter="{StaticResource IconColumnWidthConverter}">
                                 <Binding Path="IconVisibility" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
                                 <Binding Path="Density" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
+                                <Binding Path="CurrentAlertType" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
                             </MultiBinding>
                         </ColumnDefinition.Width>
                     </ColumnDefinition>
@@ -89,7 +90,7 @@
                             <Setter Property="Height" Value="18" />
                             <Setter Property="Margin" Value="10,6,0,6" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
+                                <DataTrigger Binding="{Binding BarStyle, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
                                     <Setter Property="Stroke" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Density, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Compact">
@@ -110,7 +111,7 @@
                             <Setter Property="FontSize" Value="13" />
                             <Setter Property="Margin" Value="8,0,8,0" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Theme, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
+                                <DataTrigger Binding="{Binding BarStyle, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}}" Value="Outline">
                                     <Setter Property="Foreground" Value="{Binding CurrentAlertType, RelativeSource={RelativeSource AncestorType=local:AlertBarWpf}, Converter={StaticResource AlertTypeToBrushConverter}}" />
                                 </DataTrigger>
                                 <!-- Wins over the Outline trigger above (declared later) since Neutral's pale accent can't carry white or accent-colored text. -->
@@ -130,7 +131,7 @@
                     Vector close glyph. The Grid (not the Path) owns hit-testing/hover, since the Path
                     itself is just two open line strokes and wouldn't register the mouse in the gaps
                     between them. The Path's Stroke comes from a MultiBinding of [this Grid's IsMouseOver,
-                    the control's Theme] so no close.png / close-hover.png / closeBL.png assets are needed.
+                    the control's BarStyle] so no close.png / close-hover.png / closeBL.png assets are needed.
                     Both the Grid's size and the Path's Data scale down together under Density=Compact.
                 -->
                 <Grid x:Name="closeHost" Background="Transparent" Cursor="Hand"
@@ -163,7 +164,7 @@
                         <Path.Stroke>
                             <MultiBinding Converter="{StaticResource CloseGlyphStrokeConverter}">
                                 <Binding ElementName="closeHost" Path="IsMouseOver" />
-                                <Binding Path="Theme" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
+                                <Binding Path="BarStyle" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
                                 <Binding Path="CurrentAlertType" RelativeSource="{RelativeSource AncestorType=local:AlertBarWpf}" />
                             </MultiBinding>
                         </Path.Stroke>

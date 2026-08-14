@@ -12,7 +12,7 @@
   <PropertyGroup>
     <PackageId>AlertBarWpf</PackageId>
     <Authors>Chad Kuehn</Authors>
-    <Description>A WPF UserControl for displaying user updates through an alert bar (success, danger, warning, information).</Description>
+    <Description>A WPF UserControl for displaying user updates through a themeable alert bar.</Description>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/chadkuehn/AlertBarWpf</RepositoryUrl>
     <PackageProjectUrl>https://github.com/chadkuehn/AlertBarWpf</PackageProjectUrl>
