@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SmokeTestThemed",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-smoketest-themed",
+      "program": "${workspaceFolder}/playground/SmokeTestThemed/bin/Debug/net8.0-windows/SmokeTestThemed.exe",
+      "cwd": "${workspaceFolder}/playground/SmokeTestThemed",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": "SmokeTest",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-smoketest",
+      "program": "${workspaceFolder}/playground/SmokeTest/bin/Debug/net8.0-windows/SmokeTest.exe",
+      "cwd": "${workspaceFolder}/playground/SmokeTest",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    }
+  ]
+}

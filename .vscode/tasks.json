@@ -1,0 +1,73 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-smoketest-themed",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/playground/SmokeTestThemed/SmokeTestThemed.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-smoketest",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/playground/SmokeTest/SmokeTest.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "NuGet: Pack",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "pack",
+        "${workspaceFolder}/src/AlertBarWpf.csproj",
+        "-c",
+        "Release",
+        "-o",
+        "${workspaceFolder}/nupkg",
+        "-p:PackageVersion=${input:packageVersion}"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "NuGet: Push",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "nuget",
+        "push",
+        "${workspaceFolder}/nupkg/AlertBarWpf.${input:packageVersion}.nupkg",
+        "--api-key",
+        "${input:nugetApiKey}",
+        "--source",
+        "https://api.nuget.org/v3/index.json"
+      ],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "packageVersion",
+      "type": "promptString",
+      "description": "NuGet package version to pack/push (e.g. 2.0.0-beta2)",
+      "default": "2.0.0-beta2"
+    },
+    {
+      "id": "nugetApiKey",
+      "type": "promptString",
+      "description": "NuGet API key (from nuget.org account settings) - never stored, entered fresh each run",
+      "password": true
+    }
+  ]
+}

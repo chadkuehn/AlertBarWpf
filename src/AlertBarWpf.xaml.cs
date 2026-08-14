@@ -1,33 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AlertBarWpf
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// The kind of alert currently displayed. Drives the icon and accent color via
+    /// <see cref="Converters.AlertTypeToIconGeometryConverter"/> and <see cref="Converters.AlertTypeToBrushConverter"/>.
+    /// </summary>
+    public enum AlertType
+    {
+        None,
+        Danger,
+        Warning,
+        Success,
+        Information,
+        /// <summary>A non-severity, iconless alert for generic messages that shouldn't imply status.</summary>
+        Neutral
+    }
+
+    public enum ThemeType
+    {
+        Standard = 0,
+        Outline = 1
+    }
+
+    /// <summary>
+    /// Controls the bar's overall scale (icon/text/close-glyph size and spacing).
+    /// </summary>
+    public enum DensityType
+    {
+        /// <summary>Larger icon/text/close-glyph sizing, easier to read next to typical modern-themed controls.</summary>
+        Comfortable = 0,
+        /// <summary>The original, more tightly-packed sizing.</summary>
+        Compact = 1
+    }
+
+    /// <summary>
+    /// A WPF UserControl for displaying user updates through an alert bar.
     /// </summary>
     public partial class AlertBarWpf : UserControl
     {
         public AlertBarWpf()
         {
             InitializeComponent();
-            // grdWrapper.DataContext = this;
         }
 
-
-        public static readonly RoutedEvent ShowEvent = EventManager.RegisterRoutedEvent("Show", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AlertBarWpf));
+        public static readonly RoutedEvent ShowEvent = EventManager.RegisterRoutedEvent(
+            "Show", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AlertBarWpf));
 
         public event RoutedEventHandler Show
         {
@@ -37,89 +58,80 @@ namespace AlertBarWpf
 
         private void RaiseShowEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(AlertBarWpf.ShowEvent);
-            RaiseEvent(newEventArgs);
+            RaiseEvent(new RoutedEventArgs(ShowEvent));
         }
 
-        private void TransformStage(string msg, int secs, string colorhex, string iconsrc)
+        #region Dependency properties
+
+        public static readonly DependencyProperty ThemeProperty = DependencyProperty.Register(
+            nameof(Theme), typeof(ThemeType), typeof(AlertBarWpf), new PropertyMetadata(ThemeType.Standard));
+
+        /// <summary>
+        /// Adjusts the look of the bar. See the <see cref="ThemeType"/> options.
+        /// </summary>
+        public ThemeType Theme
         {
+            get => (ThemeType)GetValue(ThemeProperty);
+            set => SetValue(ThemeProperty, value);
+        }
 
+        public static readonly DependencyProperty DensityProperty = DependencyProperty.Register(
+            nameof(Density), typeof(DensityType), typeof(AlertBarWpf), new PropertyMetadata(DensityType.Comfortable));
 
-            SolidColorBrush bg = new SolidColorBrush();
-            bg = (SolidColorBrush)(new BrushConverter().ConvertFrom(colorhex));
+        /// <summary>
+        /// Adjusts the bar's overall scale. See the <see cref="DensityType"/> options.
+        /// </summary>
+        public DensityType Density
+        {
+            get => (DensityType)GetValue(DensityProperty);
+            set => SetValue(DensityProperty, value);
+        }
 
-            Grid grdParent;
-            switch (_Theme)
-            {
-                case ThemeType.Standard:
-                    spStandard.Visibility = System.Windows.Visibility.Visible;
-                    spOutline.Visibility = System.Windows.Visibility.Collapsed;
+        public static readonly DependencyProperty IconVisibilityProperty = DependencyProperty.Register(
+            nameof(IconVisibility), typeof(bool), typeof(AlertBarWpf), new PropertyMetadata(true));
 
-                    grdParent = FindVisualChildren<Grid>(spStandard).FirstOrDefault();
-                    grdParent.Background = bg;
-                    break;
-                case ThemeType.Outline:
-                default:
-                    spStandard.Visibility = System.Windows.Visibility.Collapsed;
-                    spOutline.Visibility = System.Windows.Visibility.Visible;
+        /// <summary>
+        /// Hide or show icons in the messages.
+        /// </summary>
+        public bool IconVisibility
+        {
+            get => (bool)GetValue(IconVisibilityProperty);
+            set => SetValue(IconVisibilityProperty, value);
+        }
 
-                    grdParent = FindVisualChildren<Grid>(spOutline).FirstOrDefault();
-                    bdr.BorderBrush = bg;
-                    break;
-            }
+        private static readonly DependencyPropertyKey CurrentAlertTypePropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(CurrentAlertType), typeof(AlertType), typeof(AlertBarWpf), new PropertyMetadata(AlertType.None));
 
-            TextBlock lblMessage = FindVisualChildren<TextBlock>(grdParent).FirstOrDefault();
-            List<Image> imgs = FindVisualChildren<Image>(grdParent).ToList();
-            Image imgStatusIcon = imgs[0];
-            Image imgCloseIcon = imgs[1];
+        public static readonly DependencyProperty CurrentAlertTypeProperty = CurrentAlertTypePropertyKey.DependencyProperty;
 
+        /// <summary>
+        /// The alert currently shown by the bar. Set internally by the Set*Alert methods and bound to
+        /// in the XAML to pick the status icon and accent color.
+        /// </summary>
+        public AlertType CurrentAlertType => (AlertType)GetValue(CurrentAlertTypeProperty);
 
-            if (_IconVisibility == false)
-            {
-                imgStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
-                grdParent.ColumnDefinitions.RemoveAt(0);
-                lblMessage.SetValue(Grid.ColumnProperty, 0);
-                imgCloseIcon.SetValue(Grid.ColumnProperty, 1);
-                lblMessage.Margin = new Thickness(10, 4, 0, 4);
-                lblMessage.Height = 16;
-            }
-            else
-            {
-                imgStatusIcon.Source = new BitmapImage(new Uri("/AlertBarWpf;component/Resources/" + iconsrc, UriKind.Relative));
-            }
+        private static readonly DependencyPropertyKey MessagePropertyKey = DependencyProperty.RegisterReadOnly(
+            nameof(Message), typeof(string), typeof(AlertBarWpf), new PropertyMetadata(string.Empty));
 
+        public static readonly DependencyProperty MessageProperty = MessagePropertyKey.DependencyProperty;
 
+        /// <summary>
+        /// The text currently shown by the bar. Set internally by the Set*Alert methods.
+        /// </summary>
+        public string Message => (string)GetValue(MessageProperty);
 
+        #endregion
 
-            lblMessage.Text = msg;
-            grdWrapper.Visibility = System.Windows.Visibility.Visible;
-            key1.KeyTime = new TimeSpan(0, 0, (secs == 0 ? 0 : secs - 1));
-            key2.KeyTime = new TimeSpan(0, 0, secs);
+        private void TransformStage(string message, int timeoutInSeconds, AlertType alertType)
+        {
+            SetValue(MessagePropertyKey, message);
+            SetValue(CurrentAlertTypePropertyKey, alertType);
+
+            grdWrapper.Visibility = Visibility.Visible;
+            key1.KeyTime = new TimeSpan(0, 0, timeoutInSeconds == 0 ? 0 : timeoutInSeconds - 1);
+            key2.KeyTime = new TimeSpan(0, 0, timeoutInSeconds);
             RaiseShowEvent();
         }
-
-
-
-        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
-
 
         /// <summary>
         /// Shows a Danger Alert
@@ -127,11 +139,7 @@ namespace AlertBarWpf
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetDangerAlert(string message, int timeoutInSeconds = 0)
-        {
-            string color = "#D9534F";
-            string icon = "danger_16.png";
-            TransformStage(message, timeoutInSeconds, color, icon);
-        }
+            => TransformStage(message, timeoutInSeconds, AlertType.Danger);
 
         /// <summary>
         /// Shows a warning Alert
@@ -139,12 +147,7 @@ namespace AlertBarWpf
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetWarningAlert(string message, int timeoutInSeconds = 0)
-        {
-            string color = "#F0AD4E";
-            string icon = "warning_16.png";
-
-            TransformStage(message, timeoutInSeconds, color, icon);
-        }
+            => TransformStage(message, timeoutInSeconds, AlertType.Warning);
 
         /// <summary>
         /// Shows a Success Alert
@@ -152,12 +155,7 @@ namespace AlertBarWpf
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetSuccessAlert(string message, int timeoutInSeconds = 0)
-        {
-            string color = "#5CB85C";
-            string icon = "success_16.png";
-            TransformStage(message, timeoutInSeconds, color, icon);
-        }
-
+            => TransformStage(message, timeoutInSeconds, AlertType.Success);
 
         /// <summary>
         /// Shows an Information Alert
@@ -165,90 +163,41 @@ namespace AlertBarWpf
         /// <param name="message">The message for the alert</param>
         /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
         public void SetInformationAlert(string message, int timeoutInSeconds = 0)
-        {
-            string color = "#5BC0DE";
-            string icon = "information_16.png";
-            TransformStage(message, timeoutInSeconds, color, icon);
-        }
-
-
-        public enum ThemeType
-        {
-            Standard = 0,
-            Outline = 1
-        }
-
-        private ThemeType _Theme = ThemeType.Standard;
-        private bool _IconVisibility = true;
+            => TransformStage(message, timeoutInSeconds, AlertType.Information);
 
         /// <summary>
-        /// Hide or show icons in the messages.
+        /// Shows a Neutral Alert (no icon, no severity color) for generic messages.
         /// </summary>
-        public bool? IconVisibility
-        {
-            set
-            {
-                if (value == null)
-                {
-                    return;
-                }
-                _IconVisibility = value ?? false;
-            }
-            get
-            {
-                return _IconVisibility;
-            }
-        }
-
-
-
-        public ThemeType? Theme
-        {
-            set
-            {
-                if (value == null)
-                {
-                    return;
-                }
-                if (Enum.IsDefined(typeof(ThemeType), value))
-                {
-                    _Theme = value ?? ThemeType.Standard;
-                }
-            }
-
-            get
-            {
-                return _Theme;
-            }
-        }
-
-
+        /// <param name="message">The message for the alert</param>
+        /// <param name="timeoutInSeconds">Alert will auto-close in this amount of seconds</param>
+        public void SetNeutralAlert(string message, int timeoutInSeconds = 0)
+            => TransformStage(message, timeoutInSeconds, AlertType.Neutral);
 
         /// <summary>
         /// Remove a message if one is currently being shown.
         /// </summary>
         public void Clear()
         {
-            grdWrapper.Visibility = System.Windows.Visibility.Collapsed;
+            grdWrapper.Visibility = Visibility.Collapsed;
+            SetValue(CurrentAlertTypePropertyKey, AlertType.None);
         }
 
-        private void Image_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CloseButton_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Clear();
-
         }
 
         private void AnimationObject_Completed(object sender, EventArgs e)
         {
             if (grdWrapper.Opacity == 0)
             {
-                //If you call msgbar.setErrorMessage("Whateva") in MainWindow() of your WPF the window is not rendered yet.  So opacity is 0.  If you have a timeout of 0 then it would call this immediately
+                // If you call msgbar.SetXAlert("Whateva") in the constructor of your window, the window isn't
+                // rendered yet, so opacity is still 0. If the timeout is 0 this fires immediately.
                 if (key1.KeyTime.TimeSpan.Seconds > 0)
                 {
                     Clear();
                 }
             }
         }
-
     }
 }
