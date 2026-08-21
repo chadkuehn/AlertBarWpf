@@ -42,17 +42,15 @@
     },
     {
       "label": "NuGet: Push",
-      "type": "process",
-      "command": "dotnet",
-      "args": [
-        "nuget",
-        "push",
-        "${workspaceFolder}/nupkg/AlertBarWpf.${input:packageVersion}.nupkg",
-        "--api-key",
-        "${input:nugetApiKey}",
-        "--source",
-        "https://api.nuget.org/v3/index.json"
-      ],
+      "type": "shell",
+      "command": "dotnet nuget push \"${workspaceFolder}/nupkg/AlertBarWpf.${input:packageVersion}.nupkg\" --api-key $(Get-Secret -Name NuGetApiKey -AsPlainText) --source https://api.nuget.org/v3/index.json",
+      "problemMatcher": [],
+      "detail": "Reads the key from the PowerShell SecretStore vault (Set-Secret -Name NuGetApiKey ... one-time setup) - never typed or displayed here."
+    },
+    {
+      "label": "NuGet: Pack & Push",
+      "dependsOrder": "sequence",
+      "dependsOn": ["NuGet: Pack", "NuGet: Push"],
       "problemMatcher": []
     }
   ],
@@ -62,12 +60,6 @@
       "type": "promptString",
       "description": "NuGet package version to pack/push (e.g. 2.0.0-beta2)",
       "default": "2.0.0-beta2"
-    },
-    {
-      "id": "nugetApiKey",
-      "type": "promptString",
-      "description": "NuGet API key (from nuget.org account settings) - never stored, entered fresh each run",
-      "password": true
     }
   ]
 }
